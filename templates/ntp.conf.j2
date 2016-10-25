@@ -7,8 +7,13 @@ tinker panic 0
 driftfile {{ ntp_config_driftfile }}
 
 {% for server in ntp_config_server %}
-server {{ server }}
+server {{ server }} {% if loop.first %}iburst{% endif %}
+
 {% endfor %}
+{% if ntp_role == 'server' %}
+server 127.127.1.0
+fudge 127.127.1.0 stratum 10
+{% endif %}
 
 {% if ntp_config_statistics %}
 statistics {{ ntp_config_statistics }}
